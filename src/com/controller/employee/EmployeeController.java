@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -22,13 +21,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/getAllEmployees")
 public class EmployeeController {
-	
-	EmployeeMain e1=new EmployeeMain();
-	ArrayList<EmployeeMain> elist=e1.setValues();
-	ObjectMapper mp=new ObjectMapper();
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getAllEmployees() throws Exception{
-		
+		EmployeeMain e1=new EmployeeMain();
+		ArrayList<EmployeeMain> elist=e1.setValues();
+		ObjectMapper mp=new ObjectMapper();
 		mp.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 		String jsonData=mp.writeValueAsString(elist);
 		System.out.println(jsonData);
@@ -39,12 +36,10 @@ public class EmployeeController {
 @Controller
 @RequestMapping("/getEmployee")
 class EmpDetails{
-	
 	@RequestMapping(value="/{id}",method = RequestMethod.GET)
 	public ModelAndView getEmployeeData(@PathVariable int id,ModelMap model)throws Exception{
 		EmployeeMain e1=new EmployeeMain();
 		ArrayList<EmployeeMain> elist=e1.setValues();
-		ObjectMapper mapper=new ObjectMapper();
 		Map edetails=new HashMap();
 		String msg="NULL";
 		for (EmployeeMain empData : elist) {
@@ -56,6 +51,7 @@ class EmpDetails{
 			}
 		}
 		model.addAttribute("message",msg);
+		ObjectMapper mapper=new ObjectMapper();
 		mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 		String jsonString=mapper.writeValueAsString(edetails);
 
@@ -66,44 +62,30 @@ class EmpDetails{
 @Controller
 @RequestMapping("/rest/getAllEmployees")
 class RestEmployeeController {
-	
-	
-	EmployeeMain e1=new EmployeeMain();
-	ArrayList<EmployeeMain> elist=e1.setValues();
-	ObjectMapper mp=new ObjectMapper();
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody String getAllEmployeesRest() throws Exception{
-		
-		mp.enable(SerializationConfig.Feature.INDENT_OUTPUT);
-		String jsonData=mp.writeValueAsString(elist);
-		return jsonData;
+	public @ResponseBody ArrayList<EmployeeMain> getAllEmployees() throws Exception{
+		EmployeeMain e1=new EmployeeMain();
+		ArrayList<EmployeeMain> elist=e1.setValues();
+		return elist;
 	}
 }
 @Controller
 @RequestMapping("/rest/getEmployee")
 class RestEmployeeDetails {
-	
 	@RequestMapping(value="/{id}",method = RequestMethod.GET)
-	public @ResponseBody String getEmployeeDataRest(@PathVariable int id)throws Exception{
-		String jsonString="Null";
+	public @ResponseBody EmployeeMain getEmployeeData(@PathVariable int id)throws Exception{
+	
 		EmployeeMain e1=new EmployeeMain();
 		ArrayList<EmployeeMain> elist=e1.setValues();
-		Map edetails=new HashMap();
 		for (EmployeeMain empData : elist) {
 			int eid=empData.getEid();
 			if(eid==id){
-				edetails.put(id,empData);
-				ObjectMapper mapper=new ObjectMapper();
-				mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
-				jsonString=mapper.writeValueAsString(edetails);
-				break;
-			}
-			else{
-				jsonString="No data available";
+			return empData;
+			
 			}
 		}
 
-		return jsonString;
+		return null;
 	}
 
 }
