@@ -23,6 +23,8 @@ buildSrc/build
 /spring-*/build
 /src/asciidoc/build
 target/
+# Compiled class file
+*.class
 
 # Package Files #
 *.jar
